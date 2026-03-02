@@ -1,0 +1,22 @@
+﻿@model IEnumerable<HotelBooking.Models.Review>
+
+<h2>Відгуки</h2>
+
+<form method="post" action="/Reviews/Create">
+    <label>Ваше ім'я:</label>
+    <input type="text" name="AuthorName" required /><br />
+    <label>Відгук:</label><br />
+    <textarea name="Text" rows="4" cols="50" required></textarea><br />
+    <button type="submit">Залишити відгук</button>
+</form>
+
+<hr />
+
+@foreach (var review in Model)
+{
+    <div>
+        <strong>@review.AuthorName</strong>
+        <p>@review.Text</p>
+        <hr />
+    </div>
+}

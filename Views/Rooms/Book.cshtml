@@ -1,0 +1,23 @@
+﻿@model HotelBooking.Models.Booking
+
+<h2>Бронювання: @ViewBag.Room.Name</h2>
+
+<form method="post">
+    <input type="hidden" name="RoomId" value="@Model.RoomId" />
+
+    <label>Ім'я:</label>
+    <input type="text" name="CustomerName" required /><br />
+
+    <label>Email:</label>
+    <input type="email" name="Email" required /><br />
+
+    <label>Дата заїзду:</label>
+    <input type="date" name="CheckIn" required /><br />
+
+    <label>Дата виїзду:</label>
+    <input type="date" name="CheckOut" required /><br />
+
+    <button type="submit">Забронювати</button>
+</form>
+
+<a href="/Rooms">Назад</a>
