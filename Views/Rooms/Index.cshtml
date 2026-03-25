@@ -2,14 +2,15 @@
 
 <h2>Капсули</h2>
 
+<a href="/Rooms/Create">Додати кімнату</a>
+
 <table border="1">
     <tr>
-        <th>Name</th>
-        <th>Type</th>
-        <th>Price</th>
+        <th>Назва</th>
+        <th>Тип</th>
+        <th>Ціна</th>
         <th></th>
     </tr>
-
     @foreach (var room in Model)
     {
         <tr>
@@ -17,8 +18,11 @@
             <td>@room.Type</td>
             <td>@room.Price</td>
             <td>
-                <a href="/Rooms/Details/@room.Id">Details</a>
-                <a href="/Rooms/Book/@room.Id">Забронювати</a>
+                <a href="/Rooms/Details/@room.Id">Деталі</a>
+                <a href="/Rooms/Edit/@room.Id">Редагувати</a>
+                <form method="post" action="/Rooms/Delete/@room.Id" style="display:inline">
+                    <button type="submit">Видалити</button>
+                </form>
             </td>
         </tr>
     }

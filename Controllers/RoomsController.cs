@@ -14,9 +14,7 @@ namespace HotelBooking.Controllers
             _context = context;
         }
 
-
         // GET: /Rooms
-
         public async Task<IActionResult> Index()
         {
             var rooms = await _context.Rooms.ToListAsync();
@@ -26,41 +24,65 @@ namespace HotelBooking.Controllers
         // GET: /Rooms/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var room = await _context.Rooms
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (room == null)
-                return NotFound();
-
+            if (id == null) return NotFound();
+            var room = await _context.Rooms.FirstOrDefaultAsync(m => m.Id == id);
+            if (room == null) return NotFound();
             return View(room);
         }
-		// GET: /Rooms/Book/5
-		public async Task<IActionResult> Book(int? id)
-		{
-			if (id == null) return NotFound();
-			var room = await _context.Rooms.FindAsync(id);
-			if (room == null) return NotFound();
-			ViewBag.Room = room;
-            return View(new Booking { RoomId = id.Value });
+
+        // GET: /Rooms/Create
+        public IActionResult Create()
+        {
+            return View();
         }
 
-        // POST: /Rooms/Book
+        // POST: /Rooms/Create
         [HttpPost]
-        public async Task<IActionResult> Book(Booking booking)
+        public async Task<IActionResult> Create(Rooms room)
         {
-            var newBooking = new Booking
+            var newRoom = new Rooms
             {
-                CustomerName = booking.CustomerName,
-                Email = booking.Email,
-                CheckIn = booking.CheckIn,
-                CheckOut = booking.CheckOut,
-                RoomId = booking.RoomId
+                Name = room.Name,
+                Type = room.Type,
+                Price = room.Price
             };
-            _context.Bookings.Add(newBooking);
+            _context.Rooms.Add(newRoom);
             await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        // GET: /Rooms/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var room = await _context.Rooms.FindAsync(id);
+            if (room == null) return NotFound();
+            return View(room);
+        }
+
+        // POST: /Rooms/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Rooms room)
+        {
+            var existing = await _context.Rooms.FindAsync(id);
+            if (existing == null) return NotFound();
+            existing.Name = room.Name;
+            existing.Type = room.Type;
+            existing.Price = room.Price;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        // POST: /Rooms/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var room = await _context.Rooms.FindAsync(id);
+            if (room != null)
+            {
+                _context.Rooms.Remove(room);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index");
         }
     }

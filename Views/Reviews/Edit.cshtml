@@ -1,0 +1,13 @@
+﻿@model HotelBooking.Models.Review
+
+<h2>Редагувати відгук</h2>
+
+<form method="post" action="/Reviews/Edit/@Model.Id">
+    <label>Ваше ім'я:</label>
+    <input type="text" name="AuthorName" value="@Model.AuthorName" required /><br />
+    <label>Відгук:</label><br />
+    <textarea name="Text" rows="4" cols="50" required>@Model.Text</textarea><br />
+    <button type="submit">Зберегти</button>
+</form>
+
+<a href="/Reviews">Назад</a>

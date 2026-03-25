@@ -31,5 +31,39 @@ namespace HotelBooking.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
+
+        // GET: /Reviews/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null) return NotFound();
+            var review = await _context.Reviews.FindAsync(id);
+            if (review == null) return NotFound();
+            return View(review);
+        }
+
+        // POST: /Reviews/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, Review review)
+        {
+            var existing = await _context.Reviews.FindAsync(id);
+            if (existing == null) return NotFound();
+            existing.AuthorName = review.AuthorName;
+            existing.Text = review.Text;
+            await _context.SaveChangesAsync();
+            return RedirectToAction("Index");
+        }
+
+        // POST: /Reviews/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var review = await _context.Reviews.FindAsync(id);
+            if (review != null)
+            {
+                _context.Reviews.Remove(review);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction("Index");
+        }
     }
 }

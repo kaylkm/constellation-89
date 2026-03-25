@@ -1,0 +1,15 @@
+﻿@model HotelBooking.Models.Rooms
+
+<h2>Редагувати кімнату</h2>
+
+<form method="post" action="/Rooms/Edit/@Model.Id">
+    <label>Назва:</label>
+    <input type="text" name="Name" value="@Model.Name" required /><br />
+    <label>Тип:</label>
+    <input type="text" name="Type" value="@Model.Type" required /><br />
+    <label>Ціна:</label>
+    <input type="number" name="Price" value="@Model.Price" step="0.01" required /><br />
+    <button type="submit">Зберегти</button>
+</form>
+
+<a href="/Rooms">Назад</a>

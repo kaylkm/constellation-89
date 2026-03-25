@@ -1,0 +1,15 @@
+﻿@model HotelBooking.Models.Rooms
+
+<h2>Додати кімнату</h2>
+
+<form method="post" action="/Rooms/Create">
+    <label>Назва:</label>
+    <input type="text" name="Name" required /><br />
+    <label>Тип:</label>
+    <input type="text" name="Type" required /><br />
+    <label>Ціна:</label>
+    <input type="number" name="Price" step="0.01" required /><br />
+    <button type="submit">Додати</button>
+</form>
+
+<a href="/Rooms">Назад</a>

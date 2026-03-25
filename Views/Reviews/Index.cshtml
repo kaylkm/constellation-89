@@ -14,9 +14,13 @@
 
 @foreach (var review in Model)
 {
-    <div>
-        <strong>@review.AuthorName</strong>
-        <p>@review.Text</p>
-        <hr />
-    </div>
+        <div>
+            <strong>@review.AuthorName</strong>
+            <p>@review.Text</p>
+            <a href="/Reviews/Edit/@review.Id">Редагувати</a>
+            <form method="post" action="/Reviews/Delete/@review.Id" style="display:inline">
+                <button type="submit">Видалити</button>
+            </form>
+            <hr />
+        </div>
 }
