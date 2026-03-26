@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HotelBooking.Models
 {
-    [Table("reviews")]
-    public class Review
+    [Table("admin_replies")]
+    public class AdminReply
     {
         [Key]
         [Column("id")]
         public int Id { get; set; }
 
-        [Column("author_id")]
-        public int AuthorId { get; set; }
+        [Column("review_id")]
+        public int ReviewId { get; set; }
 
         [Required]
         [Column("text")]
@@ -21,12 +21,7 @@ namespace HotelBooking.Models
         [Column("created_at")]
         public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.UtcNow;
 
-        [Column("edited_at")]
-        public DateTimeOffset? EditedAt { get; set; }
-
-        [ForeignKey("AuthorId")]
-        public User User { get; set; }
-        public Rating Rating { get; set; }
-        public AdminReply AdminReply { get; set; }
+        [ForeignKey("ReviewId")]
+        public Review Review { get; set; }
     }
 }

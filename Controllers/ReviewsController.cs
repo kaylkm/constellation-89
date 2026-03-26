@@ -15,45 +15,62 @@ namespace HotelBooking.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var reviews = await _context.Reviews.ToListAsync();
+            // Використовуємо .Include(r => r.User), бо властивість тепер називається так
+            var reviews = await _context.Reviews
+                .Include(r => r.User)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
             return View(reviews);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Review review)
+        public async Task<IActionResult> Create(string authorName, string text)
         {
+            // Логіка напарника: знайти юзера за іменем або створити нового
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Name == authorName);
+            if (user == null)
+            {
+                user = new User { Name = authorName };
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+            }
+
             var newReview = new Review
             {
-                AuthorName = review.AuthorName,
-                Text = review.Text
+                AuthorId = user.Id,
+                Text = text,
+                CreatedAt = DateTimeOffset.UtcNow
             };
+
             _context.Reviews.Add(newReview);
             await _context.SaveChangesAsync();
+
             return RedirectToAction("Index");
         }
 
-        // GET: /Reviews/Edit/5
+        // Додаємо ваші методи Edit/Delete, адаптовані під нову модель
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null) return NotFound();
-            var review = await _context.Reviews.FindAsync(id);
+            var review = await _context.Reviews.Include(r => r.User).FirstOrDefaultAsync(r => r.Id == id);
             if (review == null) return NotFound();
             return View(review);
         }
 
-        // POST: /Reviews/Edit/5
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, Review review)
+        public async Task<IActionResult> Edit(int id, string text)
         {
             var existing = await _context.Reviews.FindAsync(id);
             if (existing == null) return NotFound();
-            existing.AuthorName = review.AuthorName;
-            existing.Text = review.Text;
+
+            existing.Text = text;
+            existing.EditedAt = DateTimeOffset.UtcNow;
+
             await _context.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
-        // POST: /Reviews/Delete/5
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
