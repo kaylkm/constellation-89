@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Constellation 89</title>
+
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a asp-controller="Home" asp-action="Index" asp-fragment="hero" class="nav-logo">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">Constellation <em>89</em></span>
+            </a>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#about" class="nav-link">Про нас</a></li>
+                <li><a href="#capsules" class="nav-link">Капсули</a></li>
+                <li><a href="#gallery" class="nav-link">Галерея</a></li>
+                <li><a href="#reviews" class="nav-link">Відгуки</a></li>
+                <li><a href="#contact" class="nav-link">Контакти</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

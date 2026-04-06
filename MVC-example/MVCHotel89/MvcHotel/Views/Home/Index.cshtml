@@ -1,0 +1,216 @@
+﻿@model MvcHotel.ViewModels.HomeIndexViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Constellation 89";
+    var capsulesJson = JsonSerializer.Serialize(
+        Model.Capsules.Select(c => new
+        {
+            id = c.Id,
+            title = c.Title,
+            subtitle = c.Subtitle,
+            desc = c.Description,
+            price = $"₴{c.Price}",
+            imgClass = c.ImageClass,
+            badge = c.Badge,
+            badgeClass = c.BadgeClass,
+            amenities = c.Amenities
+        }));
+}
+
+<section class="hero" id="hero">
+    <div class="hero-bg"></div>
+
+    <div class="stars" aria-hidden="true">
+        <div class="star s1"></div><div class="star s2"></div><div class="star s3"></div>
+        <div class="star s4"></div><div class="star s5"></div><div class="star s6"></div>
+        <div class="star s7"></div><div class="star s8"></div><div class="star s9"></div>
+    </div>
+
+    <div class="hero-content">
+        <p class="hero-sub">Ласкаво просимо до</p>
+        <h1 class="hero-title"><span class="neon-text">Constellation 89</span></h1>
+        <p class="hero-desc">
+            Твій власний куточок всесвіту — де сучасний комфорт зустрічається з безкрайнім космосом.
+        </p>
+        <div class="hero-actions">
+            <a href="#capsules" class="btn btn-neon">Переглянути капсули</a>
+            <a href="#about" class="btn btn-ghost">Дізнатись більше</a>
+        </div>
+    </div>
+</section>
+
+<section class="about" id="about">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Наша місія</span>
+            <h2 class="section-title">Про нас</h2>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-text">
+                <p class="about-lead">
+                    Capsule Hotel Constellation 89 — це сучасний капсульний готель у космічній тематиці.
+                </p>
+                <p>
+                    Ми створили власне сузір'я, де кожен гість стає його частиною.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="capsules" id="capsules">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Оберіть свою</span>
+            <h2 class="section-title">Наші Капсули</h2>
+            <p class="section-desc">
+                Кожен гість отримує власну капсулу — приватний простір для відпочинку.
+            </p>
+        </div>
+    </div>
+
+    <div class="carousel-outer">
+        <div class="capsules-grid" id="capsules-grid">
+            @foreach (var capsule in Model.Capsules)
+            {
+                <article class="capsule-card @(capsule.Id == "singlew" ? "capsule-card--featured" : "")"
+                         onclick="openModal('@capsule.Id')">
+                    <div class="capsule-img @GetCapsuleCardClass(capsule.Id)"></div>
+                    <div class="capsule-body">
+                        <h3 class="capsule-name">
+                            @capsule.Title <span>@capsule.Subtitle</span>
+                        </h3>
+                        <div class="capsule-footer">
+                            <div class="capsule-price">
+                                <span class="price-from">від</span>
+                                <span class="price-amount">₴@capsule.Price</span>
+                                <span class="price-per">/ніч</span>
+                            </div>
+                            <button type="button" class="btn-details">
+                                Детальніше
+                            </button>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="reviews" id="reviews">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Гості про нас</span>
+            <h2 class="section-title">Відгуки</h2>
+        </div>
+
+        <div class="reviews-grid">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-card @(review.IsHighlighted ? "review-card--highlight" : "")">
+                    <div class="review-stars">@(new string('★', review.Rating))</div>
+                    <p class="review-text">"@review.Text"</p>
+                    <div class="review-author">
+                        <div class="author-avatar">@review.AvatarLetter</div>
+                        <div>
+                            <strong>@review.Author</strong>
+                            <span>@review.CityAndDate</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<section class="contact" id="contact">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Зв'яжіться з нами</span>
+            <h2 class="section-title">Контакти</h2>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <strong>Адреса</strong>
+                        <p>вул. Зоряна, 89, Київ, Україна</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form-wrap" id="leave-review">
+                <h3 class="form-title">✦ Залишити відгук</h3>
+
+                <form asp-action="SubmitReview" asp-controller="Home" method="post" class="contact-form">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.Name"></label>
+                        <input asp-for="ReviewForm.Name" class="form-control" />
+                        <span asp-validation-for="ReviewForm.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.CapsuleType"></label>
+                        <select asp-for="ReviewForm.CapsuleType" class="form-control">
+                            <option value="">Оберіть тип</option>
+                            @foreach (var capsule in Model.Capsules)
+                            {
+                                <option value="@capsule.Id">@capsule.Title — @capsule.Subtitle</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ReviewForm.CapsuleType" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.Rating"></label>
+                        <input asp-for="ReviewForm.Rating" type="number" min="1" max="5" class="form-control" />
+                        <span asp-validation-for="ReviewForm.Rating" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.Text"></label>
+                        <textarea asp-for="ReviewForm.Text" rows="4" class="form-control"></textarea>
+                        <span asp-validation-for="ReviewForm.Text" class="text-danger"></span>
+                    </div>
+
+                    <button class="btn btn-neon btn-full" type="submit">Надіслати відгук ✦</button>
+
+                    @if (TempData["ReviewSuccess"] != null)
+                    {
+                        <div class="review-success" style="display:block;">
+                            <span>🌌</span>
+                            <p>@TempData["ReviewSuccess"]</p>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@await Html.PartialAsync("_CapsuleModal")
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const capsules = @Html.Raw(capsulesJson);
+    </script>
+    <script src="~/js/site.js"></script>
+}
+
+@functions {
+    public string GetCapsuleCardClass(string id) => id switch
+    {
+        "single" => "capsule-img--standard",
+        "singlew" => "capsule-img--premium",
+        "singlem" => "capsule-img--lux",
+        "double" => "capsule-img--double",
+        _ => ""
+    };
+}
