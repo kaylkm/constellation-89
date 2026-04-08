@@ -1,0 +1,34 @@
+@model MvcHotel.ViewModels.Admin.UserEditViewModel
+@{
+    ViewData["Title"] = "Новий користувач";
+}
+
+<div style="max-width:480px;">
+    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title">Новий користувач</span>
+        </div>
+        <div class="page-card-body">
+            <form asp-area="Admin" asp-controller="Users" asp-action="Create" method="post">
+                @Html.AntiForgeryToken()
+
+                <div class="mb-4">
+                    <label class="form-label-admin">Ім'я</label>
+                    <input asp-for="Name" class="form-control-admin" placeholder="Введіть ім'я..." />
+                    <span asp-validation-for="Name" style="color:#fca5a5; font-size:.8rem;"></span>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn-admin btn-primary-admin" style="padding:.55rem 1.5rem;">Створити</button>
+                    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="btn-admin btn-secondary-admin" style="padding:.55rem 1.5rem;">Скасувати</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,36 @@
+@model MvcHotel.Data.Entities.Review
+@{
+    ViewData["Title"] = "Видалити відгук";
+}
+
+<div class="delete-card">
+    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title" style="color:#fca5a5;">Видалити відгук #@Model.Id?</span>
+        </div>
+        <div class="page-card-body">
+            <div class="mb-3">
+                <div class="form-label-admin">Автор</div>
+                <div style="font-weight:600;">@Model.Author.Name</div>
+            </div>
+            <div class="mb-4">
+                <div class="form-label-admin">Текст</div>
+                <div style="color:var(--muted); line-height:1.5;">@Model.Text</div>
+            </div>
+
+            <div style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:8px; padding:.75rem 1rem; margin-bottom:1.5rem; font-size:.875rem; color:#fca5a5;">
+                Цю дію неможливо скасувати. Відгук та всі пов'язані дані буде видалено.
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <form asp-area="Admin" asp-controller="Reviews" asp-action="Delete" asp-route-id="@Model.Id" method="post">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn-admin btn-danger-admin" style="padding:.55rem 1.5rem;">Видалити</button>
+                </form>
+                <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="btn-admin btn-secondary-admin" style="padding:.55rem 1.5rem;">Скасувати</a>
+            </div>
+        </div>
+    </div>
+</div>

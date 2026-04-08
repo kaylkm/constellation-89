@@ -1,0 +1,39 @@
+@model List<MvcHotel.Data.Entities.CapsulePrice>
+@{
+    ViewData["Title"] = "Ціни капсул";
+    var names = ViewBag.CapsuleNames as Dictionary<string, string>;
+}
+
+<div class="page-card">
+    <div class="page-card-header">
+        <span class="page-card-title">Ціни капсул</span>
+    </div>
+    <div style="overflow-x:auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Капсула</th>
+                    <th>Поточна ціна</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var c in Model)
+                {
+                    var displayName = names != null && names.TryGetValue(c.Slug, out var n) ? n : c.Slug;
+                    <tr>
+                        <td style="font-weight:600;">@displayName</td>
+                        <td>
+                            <span style="font-size:1.1rem; font-weight:700; color:var(--accent);">@c.Price</span>
+                            <span style="color:var(--muted); font-size:.8rem;"> грн / ніч</span>
+                        </td>
+                        <td>
+                            <a asp-area="Admin" asp-controller="Capsules" asp-action="Edit" asp-route-id="@c.Id"
+                               class="btn-admin btn-primary-admin">Змінити ціну</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
