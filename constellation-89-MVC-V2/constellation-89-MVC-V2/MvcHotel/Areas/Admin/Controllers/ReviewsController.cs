@@ -85,27 +85,32 @@ namespace MvcHotel.Areas.Admin.Controllers
             {
                 if (review.AdminReply == null)
                 {
-                    review.AdminReply = new AdminReply
+                    // Adding a NEW reply
+                    var newReply = new AdminReply
                     {
                         ReviewId = review.Id,
-                        Text = vm.AdminReplyText,
+                        Text = vm.AdminReplyText.Trim(),
                         CreatedAt = DateTimeOffset.UtcNow
                     };
-                    _context.AdminReplies.Add(review.AdminReply);
+                    _context.AdminReplies.Add(newReply);
                 }
                 else
                 {
-                    review.AdminReply.Text = vm.AdminReplyText;
+                    // UPDATING an existing reply
+                    review.AdminReply.Text = vm.AdminReplyText.Trim();
+                    review.AdminReply.CreatedAt = DateTimeOffset.UtcNow; // Optional: update the timestamp or keep original
+                    _context.Update(review.AdminReply);
                 }
+                TempData["Success"] = "Відповідь успішно збережено.";
             }
             else if (review.AdminReply != null)
             {
+                // REMOVING a reply if text is cleared
                 _context.AdminReplies.Remove(review.AdminReply);
+                TempData["Success"] = "Відповідь видалено.";
             }
 
             await _context.SaveChangesAsync();
-
-            TempData["Success"] = "Відповідь збережено.";
             return RedirectToAction(nameof(Index));
         }
 
@@ -127,14 +132,21 @@ namespace MvcHotel.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var review = await _context.Reviews.FindAsync(id);
+            // Explicitly find the review with its related rating and reply
+            var review = await _context.Reviews
+                .Include(r => r.Rating)
+                .Include(r => r.AdminReply)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
             if (review != null)
             {
+                // Remove the review (Rating and AdminReply will be removed automatically 
+                // due to the One-to-One Cascade defined in HotelDbContext)
                 _context.Reviews.Remove(review);
                 await _context.SaveChangesAsync();
+                TempData["Success"] = $"Відгук #{id} успішно видалено.";
             }
 
-            TempData["Success"] = "Відгук видалено.";
             return RedirectToAction(nameof(Index));
         }
     }

@@ -26,7 +26,7 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<HotelDbContext>();
-    await db.Database.ExecuteSqlRawAsync(@"
+     await db.Database.ExecuteSqlRawAsync(@"
         CREATE TABLE IF NOT EXISTS capsule_prices (
             id    SERIAL PRIMARY KEY,
             slug  VARCHAR(50) NOT NULL UNIQUE,

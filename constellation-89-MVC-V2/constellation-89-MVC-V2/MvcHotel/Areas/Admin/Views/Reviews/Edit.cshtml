@@ -35,19 +35,24 @@
                 <input type="hidden" asp-for="Id" />
 
                 <div class="mb-4">
-                    <label class="form-label-admin">Відповідь готелю</label>
+                    <label class="form-label-admin">
+                        @(Model.AdminReplyText != null ? "Редагувати відповідь готелю" : "Написати відповідь готелю")
+                    </label>
                     <textarea asp-for="AdminReplyText"
                               class="form-control-admin"
-                              rows="4"
+                              rows="6"
+                              style="border-color: @(Model.AdminReplyText != null ? "var(--accent)" : "var(--border)");"
                               placeholder="Напишіть відповідь від імені готелю Constellation 89..."></textarea>
                     <div style="font-size:.75rem; color:var(--muted); margin-top:.35rem;">
-                        Залиште пустим, щоб видалити існуючу відповідь.
+                        @(Model.AdminReplyText != null 
+                            ? "Ви редагуєте існуючу відповідь. Очистіть поле, щоб видалити її." 
+                            : "Ваша відповідь буде опублікована під відгуком клієнта.")
                     </div>
                 </div>
 
                 <div style="display:flex; gap:10px;">
                     <button type="submit" class="btn-admin btn-primary-admin" style="padding:.55rem 1.5rem;">
-                        @(Model.AdminReplyText != null ? "Оновити відповідь" : "Відповісти")
+                        @(Model.AdminReplyText != null ? "Зберегти зміни" : "Опублікувати відповідь")
                     </button>
                     <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="btn-admin btn-secondary-admin" style="padding:.55rem 1.5rem;">Скасувати</a>
                 </div>
