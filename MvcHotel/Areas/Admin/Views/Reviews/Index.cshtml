@@ -1,0 +1,64 @@
+@model List<MvcHotel.Data.Entities.Review>
+@{
+    ViewData["Title"] = "Відгуки";
+}
+
+<div class="page-card">
+    <div class="page-card-header">
+        <span class="page-card-title">Усі відгуки (@Model.Count)</span>
+    </div>
+    <div style="overflow-x:auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Автор</th>
+                    <th>Текст</th>
+                    <th>Оцінка</th>
+                    <th>Відповідь</th>
+                    <th>Дата</th>
+                    <th>Дії</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td style="color:var(--muted);">@r.Id</td>
+                        <td style="font-weight:600;">@r.Author.Name</td>
+                        <td style="max-width:260px;" class="text-truncate-2">@r.Text</td>
+                        <td>
+                            @if (r.Rating?.GeneralImpression != null)
+                            {
+                                <span class="badge-rating">★ @r.Rating.GeneralImpression</span>
+                            }
+                            else { <span style="color:var(--muted);">—</span> }
+                        </td>
+                        <td>
+                            @if (r.AdminReply != null)
+                            {
+                                <span class="badge-replied">✓ Є</span>
+                            }
+                            else
+                            {
+                                <span class="badge-no-reply">Немає</span>
+                            }
+                        </td>
+                        <td style="color:var(--muted); font-size:0.8rem; white-space:nowrap;">
+                            @r.CreatedAt.ToString("dd.MM.yyyy")
+                        </td>
+                        <td style="white-space:nowrap;">
+                            <a asp-area="Admin" asp-controller="Reviews" asp-action="Details" asp-route-id="@r.Id" class="btn-admin btn-secondary-admin" style="margin-right:4px;">Деталі</a>
+                            <a asp-area="Admin" asp-controller="Reviews" asp-action="Edit" asp-route-id="@r.Id" class="btn-admin btn-primary-admin" style="margin-right:4px;">Відповісти</a>
+                            <a asp-area="Admin" asp-controller="Reviews" asp-action="Delete" asp-route-id="@r.Id" class="btn-admin btn-danger-admin">Видалити</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="7" style="text-align:center; color:var(--muted); padding:2rem;">Відгуків ще немає</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

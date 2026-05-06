@@ -1,0 +1,599 @@
+@model MvcHotel.ViewModels.HomeIndexViewModel
+@using System.Text.Json
+
+@{
+    ViewData["Title"] = "Constellation 89";
+    var capsulesJson = JsonSerializer.Serialize(
+        Model.Capsules.Select(c => new
+        {
+            id        = c.Id,
+            title     = c.Title,
+            subtitle  = c.Subtitle,
+            desc      = c.Description,
+            price     = $"₴{c.Price}",
+            imgClass  = c.ImageClass,
+            badge     = c.Badge,
+            badgeClass= c.BadgeClass,
+            amenities = c.Amenities
+        }));
+}
+
+@* ========== HERO ========== *@
+<section class="hero" id="hero">
+    <div class="hero-bg"></div>
+
+    <div class="stars" aria-hidden="true">
+        <div class="star s1"></div><div class="star s2"></div><div class="star s3"></div>
+        <div class="star s4"></div><div class="star s5"></div><div class="star s6"></div>
+        <div class="star s7"></div><div class="star s8"></div><div class="star s9"></div>
+    </div>
+
+    <div class="hero-content">
+        <p class="hero-sub">Ласкаво просимо до</p>
+        <h1 class="hero-title"><span class="neon-text">Constellation 89</span></h1>
+        <p class="hero-desc">
+            Твій власний куточок всесвіту — де сучасний комфорт зустрічається з безкрайнім космосом.
+        </p>
+        <div class="hero-actions">
+            <a href="#capsules" class="btn btn-neon">Переглянути капсули</a>
+            <a href="#about"    class="btn btn-ghost">Дізнатись більше</a>
+        </div>
+
+        <div class="hero-stats">
+            <div class="stat">
+                <span class="stat-num">117</span>
+                <span class="stat-label">Капсул</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-num">4.3★</span>
+                <span class="stat-label">Рейтинг</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat">
+                <span class="stat-num">24/7</span>
+                <span class="stat-label">Підтримка</span>
+            </div>
+        </div>
+    </div>
+
+    <a href="#about" class="scroll-down" aria-label="Прокрутити вниз">
+        <span class="scroll-arrow">↓</span>
+    </a>
+</section>
+
+@* ========== ПРО НАС ========== *@
+<section class="about" id="about">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Наша місія</span>
+            <h2 class="section-title">Про нас</h2>
+        </div>
+
+        <div class="about-grid">
+            <div class="about-text">
+                <p class="about-lead">
+                    Capsule Hotel Constellation 89 — це сучасний капсульний готель у космічній тематиці.
+                </p>
+                <p>
+                    Ми створили власне сузір'я, де кожен гість стає його частиною. Наша місія — забезпечити
+                    комфортні умови проживання за доступною ціною. Ми прагнемо, щоб кожен гість залишився
+                    задоволений і повернувся знову.
+                </p>
+
+                <ul class="about-features">
+                    <li class="feature-item">
+                        <span class="feature-icon">🛸</span>
+                        <div>
+                            <strong>Унікальний дизайн</strong>
+                            <p>Кожна капсула — це продуманий простір з космічною атмосферою</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">🔐</span>
+                        <div>
+                            <strong>Повна приватність</strong>
+                            <p>Ваш особистий простір захищений від сторонніх поглядів</p>
+                        </div>
+                    </li>
+                    <li class="feature-item">
+                        <span class="feature-icon">⚡</span>
+                        <div>
+                            <strong>Все, для вашої зручності</strong>
+                            <p>При поселенні кожен гість отримує змінні крокси, рушник та ключ до персонального локера для зберігання особистих речей</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="about-visual">
+                <div class="orbit-card">
+                    <div class="orbit-ring ring1"></div>
+                    <div class="orbit-ring ring2"></div>
+                    <div class="orbit-ring ring3"></div>
+                    <div class="orbit-core"><span>C89</span></div>
+                    <div class="planet p1"></div>
+                    <div class="planet p2"></div>
+                    <div class="planet p3"></div>
+                </div>
+                <div class="glass-card stat-card">
+                    <span class="stat-card-icon">🌌</span>
+                    <strong>14000+</strong>
+                    <span>задоволених гостей</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ========== КАПСУЛИ ========== *@
+<section class="capsules" id="capsules">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Оберіть свою</span>
+            <h2 class="section-title">Наші Капсули</h2>
+            <p class="section-desc">
+                Кожен гість отримує власну капсулу — приватний простір для відпочинку.
+                У капсулі є освітлення, вентиляція та все необхідне для комфортного сну.
+            </p>
+        </div>
+    </div>
+
+    <div class="carousel-outer">
+        <div class="capsules-grid" id="capsules-grid">
+            @foreach (var capsule in Model.Capsules)
+            {
+                <article class="capsule-card @(capsule.Id == "singlew" ? "capsule-card--featured" : "")"
+                         onclick="openModal('@capsule.Id')">
+                    <div class="capsule-img @GetCapsuleCardClass(capsule.Id)"></div>
+                    <div class="capsule-body">
+                        <h3 class="capsule-name">
+                            @capsule.Title <span>@capsule.Subtitle</span>
+                        </h3>
+                        <div class="capsule-footer">
+                            <div class="capsule-price">
+                                <span class="price-from">від</span>
+                                <span class="price-amount">₴@capsule.Price</span>
+                                <span class="price-per">/ніч</span>
+                            </div>
+                            <button type="button" class="btn-details">Детальніше</button>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</section>
+
+@* ========== ГАЛЕРЕЯ ========== *@
+<section class="gallery" id="gallery">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Наш простір</span>
+            <h2 class="section-title">Галерея</h2>
+            <p class="section-desc">Зануртеся в атмосферу Constellation 89 — де кожен кут дихає космосом.</p>
+        </div>
+
+        <div class="gallery-grid">
+            <div class="gallery-item gallery-item--large" data-src="/images/IMG_2676.jpg" data-label="Лобі готелю">
+                <div class="gallery-img gi-1"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Лобі готелю</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2644.jpg" data-label="Одномісна капсула">
+                <div class="gallery-img gi-2"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Одномісна капсула</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/capsule_double.jpg" data-label="Двомісна капсула">
+                <div class="gallery-img gi-3"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Двомісна капсула</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2678.jpg" data-label="Зона відпочинку">
+                <div class="gallery-img gi-4"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Зона відпочинку</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2666.jpg" data-label="Коридор капсул">
+                <div class="gallery-img gi-5"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Коридор капсул</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2643.jpg" data-label="Капсульний блок">
+                <div class="gallery-img gi-6"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Капсульний блок</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2683.jpg" data-label="Фасад готелю">
+                <div class="gallery-img gi-7"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Фасад готелю</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/IMG_2641.jpg" data-label="Зона санвузлів">
+                <div class="gallery-img gi-8"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Зона санвузлів</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/photo-3875.jpg" data-label="Атмосфера готелю">
+                <div class="gallery-img gi-9"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Атмосфера готелю</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/photo-37814.jpg" data-label="Кухня загального користування">
+                <div class="gallery-img gi-10"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Кухня загального користування</span></div>
+            </div>
+            <div class="gallery-item" data-src="/images/photo-71945.jpg" data-label="Робоча зона">
+                <div class="gallery-img gi-11"></div>
+                <div class="gallery-overlay"><span class="gallery-label">Робоча зона</span></div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+@* ========== LIGHTBOX ========== *@
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Перегляд фото">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Закрити">&#10005;</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Попереднє фото">&#8249;</button>
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Наступне фото">&#8250;</button>
+    <div class="lightbox-content">
+        <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+        <p class="lightbox-caption" id="lightboxCaption"></p>
+    </div>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
+
+@* ========== ВІДГУКИ ========== *@
+<section class="reviews" id="reviews">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Гості про нас</span>
+            <h2 class="section-title">Відгуки</h2>
+        </div>
+
+        <div class="reviews-grid">
+            @foreach (var review in Model.Reviews)
+            {
+                <div class="review-card @(review.IsHighlighted ? "review-card--highlight" : "")">
+                    <div class="review-overall-label">Загальне враження:</div>
+                    <div class="review-stars">@(new string('★', review.Rating))</div>
+                    <p class="review-text">"@review.Text"</p>
+
+                    @if (review.Cleanliness.HasValue || review.Staff.HasValue || review.PriceQuality.HasValue)
+                    {
+                        <div class="review-ratings">
+                            @if (review.Cleanliness.HasValue)
+                            {
+                                <div class="review-rating-item">
+                                    <span class="review-rating-label">Чистота</span>
+                                    <span class="review-rating-stars">@(new string('★', review.Cleanliness.Value))@(new string('☆', 5 - review.Cleanliness.Value))</span>
+                                </div>
+                            }
+                            @if (review.Staff.HasValue)
+                            {
+                                <div class="review-rating-item">
+                                    <span class="review-rating-label">Персонал</span>
+                                    <span class="review-rating-stars">@(new string('★', review.Staff.Value))@(new string('☆', 5 - review.Staff.Value))</span>
+                                </div>
+                            }
+                            @if (review.PriceQuality.HasValue)
+                            {
+                                <div class="review-rating-item">
+                                    <span class="review-rating-label">Ціна/Якість</span>
+                                    <span class="review-rating-stars">@(new string('★', review.PriceQuality.Value))@(new string('☆', 5 - review.PriceQuality.Value))</span>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <div class="review-author">
+                        <div class="author-avatar av1">@review.AvatarLetter</div>
+                        <div>
+                            <strong>@review.Author</strong>
+                            <span>@review.CityAndDate</span>
+                        </div>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(review.AdminReply))
+                    {
+                        <div class="review-hotel-reply">
+                            <div class="review-hotel-reply__label">✦ Відповідь готелю</div>
+                            <p class="review-hotel-reply__text">@review.AdminReply</p>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+@* ========== КОНТАКТИ ========== *@
+<section class="contact" id="contact">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-tag">✦ Зв'яжіться з нами</span>
+            <h2 class="section-title">Контакти</h2>
+        </div>
+
+        <div class="contact-grid">
+            <div class="contact-info">
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <strong>Адреса</strong>
+                        <p>вул. Шевченка 21, Львів, Україна</p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <div>
+                        <strong>Телефон</strong>
+                        <p><a href="tel:+380969223615">+38 (096) 922-36-15</a></p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <div>
+                        <strong>Email</strong>
+                        <p><a href="mailto:hotelconstellation89@@gmail.com">hotelconstellation89@@gmail.com</a></p>
+                    </div>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">🕐</span>
+                    <div>
+                        <strong>Години роботи</strong>
+                        <p>Цілодобово, 24/7</p>
+                    </div>
+                </div>
+
+                <div class="contact-map">
+                    <iframe
+                        src="https://www.google.com/maps/embed/v1/place?key=AIzaSyCG441zdQR5nlY3DxeY3Yxwy4vGoqu7xHI&q=Hotel+Constellation+89+Lviv+Shevchenka+21&zoom=17&language=uk"
+                        width="100%"
+                        height="260"
+                        style="border:0; border-radius: 16px; margin-top: 1.5rem;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        title="Constellation 89 — вул. Шевченка 21, Львів">
+                    </iframe>
+                    <a href="https://www.google.com/maps/search/?api=1&query=Hotel+Constellation+89+Lviv+Shevchenka+21"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="map-open-link">
+                        🗺 Відкрити в Google Maps
+                    </a>
+                </div>
+            </div>
+
+            <div class="contact-form-wrap" id="leave-review">
+                <h3 class="form-title">✦ Залишити відгук</h3>
+
+                <form asp-action="SubmitReview" asp-controller="Home" method="post" class="contact-form">
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.Name"></label>
+                        <input asp-for="ReviewForm.Name" class="form-control" placeholder="Іван Місяченко" />
+                        <span asp-validation-for="ReviewForm.Name" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.CapsuleType"></label>
+                        <select asp-for="ReviewForm.CapsuleType" class="form-control">
+                            <option value="">Оберіть тип</option>
+                            @foreach (var capsule in Model.Capsules)
+                            {
+                                <option value="@capsule.Id">@capsule.Title — @capsule.Subtitle</option>
+                            }
+                        </select>
+                        <span asp-validation-for="ReviewForm.CapsuleType" class="text-danger"></span>
+                    </div>
+
+                    @* Загальне враження — зіркова оцінка *@
+                    <div class="form-group">
+                        <label>Загальне враження</label>
+                        <div class="star-rating" id="star-rating-overall">
+                            <span class="star-btn" data-val="1">★</span>
+                            <span class="star-btn" data-val="2">★</span>
+                            <span class="star-btn" data-val="3">★</span>
+                            <span class="star-btn" data-val="4">★</span>
+                            <span class="star-btn" data-val="5">★</span>
+                        </div>
+                        <input asp-for="ReviewForm.Rating" type="hidden" id="rv-rating-overall" />
+                        <span asp-validation-for="ReviewForm.Rating" class="text-danger"></span>
+                    </div>
+
+                    @* Чистота *@
+                    <div class="form-group">
+                        <label>Чистота</label>
+                        <div class="star-rating" id="star-rating-clean">
+                            <span class="star-btn" data-val="1">★</span>
+                            <span class="star-btn" data-val="2">★</span>
+                            <span class="star-btn" data-val="3">★</span>
+                            <span class="star-btn" data-val="4">★</span>
+                            <span class="star-btn" data-val="5">★</span>
+                        </div>
+                        <input asp-for="ReviewForm.RatingClean" type="hidden" id="rv-rating-clean" />
+                    </div>
+
+                    @* Персонал *@
+                    <div class="form-group">
+                        <label>Персонал</label>
+                        <div class="star-rating" id="star-rating-staff">
+                            <span class="star-btn" data-val="1">★</span>
+                            <span class="star-btn" data-val="2">★</span>
+                            <span class="star-btn" data-val="3">★</span>
+                            <span class="star-btn" data-val="4">★</span>
+                            <span class="star-btn" data-val="5">★</span>
+                        </div>
+                        <input asp-for="ReviewForm.RatingStaff" type="hidden" id="rv-rating-staff" />
+                    </div>
+
+                    @* Ціна / Якість *@
+                    <div class="form-group">
+                        <label>Ціна / Якість</label>
+                        <div class="star-rating" id="star-rating-value">
+                            <span class="star-btn" data-val="1">★</span>
+                            <span class="star-btn" data-val="2">★</span>
+                            <span class="star-btn" data-val="3">★</span>
+                            <span class="star-btn" data-val="4">★</span>
+                            <span class="star-btn" data-val="5">★</span>
+                        </div>
+                        <input asp-for="ReviewForm.RatingValue" type="hidden" id="rv-rating-value" />
+                    </div>
+
+                    <div class="form-group">
+                        <label asp-for="ReviewForm.Text"></label>
+                        <textarea asp-for="ReviewForm.Text" rows="4" class="form-control"
+                                  placeholder="Поділіться враженнями від перебування..."></textarea>
+                        <span asp-validation-for="ReviewForm.Text" class="text-danger"></span>
+                    </div>
+
+                    <button class="btn btn-neon btn-full" type="submit">Надіслати відгук ✦</button>
+
+                    @if (TempData["ReviewSuccess"] != null)
+                    {
+                        <div class="review-success" style="display:flex;">
+                            <span>🌌</span>
+                            <p>@TempData["ReviewSuccess"]</p>
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+@* ========== FOOTER ========== *@
+<footer class="footer">
+    <div class="container">
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <a href="#hero" class="nav-logo">
+                    <span class="logo-icon">✦</span>
+                    <span class="logo-text">Constellation <em>89</em></span>
+                </a>
+                <p>Твій простір серед зірок</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="#about">Про нас</a>
+                <a href="#capsules">Капсули</a>
+                <a href="#gallery">Галерея</a>
+                <a href="#reviews">Відгуки</a>
+                <a href="#contact">Контакти</a>
+            </div>
+
+            <div class="footer-social">
+                <a href="https://www.instagram.com/constellation.89/"
+                   aria-label="Instagram" class="social-link"
+                   target="_blank" rel="noopener noreferrer">IG</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2025 Constellation 89. Всі права захищені.</p>
+        </div>
+    </div>
+</footer>
+
+@* ========== МОДАЛЬНЕ ВІКНО ========== *@
+@await Html.PartialAsync("_CapsuleModal")
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        const capsules = @Html.Raw(capsulesJson);
+    </script>
+    <script src="~/js/site.js"></script>
+
+    <script>
+        // ─── Drag-to-scroll карусель капсул ───
+        const grid = document.getElementById('capsules-grid');
+        if (grid) {
+            let isDown = false, startX, scrollLeft;
+            grid.addEventListener('mousedown', e => {
+                isDown = true;
+                grid.classList.add('grabbing');
+                startX = e.pageX - grid.offsetLeft;
+                scrollLeft = grid.scrollLeft;
+            });
+            grid.addEventListener('mouseleave', () => { isDown = false; grid.classList.remove('grabbing'); });
+            grid.addEventListener('mouseup',    () => { isDown = false; grid.classList.remove('grabbing'); });
+            grid.addEventListener('mousemove',  e => {
+                if (!isDown) return;
+                e.preventDefault();
+                grid.scrollLeft = scrollLeft - (e.pageX - grid.offsetLeft - startX) * 1.5;
+            });
+        }
+
+        // ─── Lightbox галереї ───
+        (function () {
+            const items = Array.from(document.querySelectorAll('.gallery-item[data-src]'));
+            const lb    = document.getElementById('lightbox');
+            const img   = document.getElementById('lightboxImg');
+            const cap   = document.getElementById('lightboxCaption');
+            const ctr   = document.getElementById('lightboxCounter');
+            let current = 0;
+
+            function open(index) {
+                current = index;
+                const item = items[current];
+                img.src = item.dataset.src;
+                img.alt = item.dataset.label || '';
+                cap.textContent = item.dataset.label || '';
+                ctr.textContent = (current + 1) + ' / ' + items.length;
+                lb.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function close() {
+                lb.classList.remove('active');
+                img.src = '';
+                document.body.style.overflow = '';
+            }
+
+            function prev() { open((current - 1 + items.length) % items.length); }
+            function next() { open((current + 1) % items.length); }
+
+            items.forEach((item, i) => item.addEventListener('click', () => open(i)));
+            document.getElementById('lightboxClose').addEventListener('click', close);
+            document.getElementById('lightboxPrev').addEventListener('click', prev);
+            document.getElementById('lightboxNext').addEventListener('click', next);
+            lb.addEventListener('click', e => { if (e.target === lb) close(); });
+            document.addEventListener('keydown', e => {
+                if (!lb.classList.contains('active')) return;
+                if (e.key === 'Escape')      close();
+                if (e.key === 'ArrowLeft')   prev();
+                if (e.key === 'ArrowRight')  next();
+            });
+        })();
+
+        // ─── Зіркова оцінка ───
+        ['overall', 'clean', 'staff', 'value'].forEach(cat => {
+            const stars = document.querySelectorAll(`#star-rating-${cat} .star-btn`);
+            const input = document.getElementById(`rv-rating-${cat}`);
+            if (!input) return;
+
+            stars.forEach(btn => {
+                btn.addEventListener('mouseenter', () => {
+                    const v = +btn.dataset.val;
+                    stars.forEach(s => s.classList.toggle('hovered', +s.dataset.val <= v));
+                });
+                btn.addEventListener('mouseleave', () => {
+                    stars.forEach(s => s.classList.remove('hovered'));
+                    stars.forEach(s => s.classList.toggle('selected', +s.dataset.val <= +input.value));
+                });
+                btn.addEventListener('click', () => {
+                    input.value = btn.dataset.val;
+                    stars.forEach(s => s.classList.toggle('selected', +s.dataset.val <= +btn.dataset.val));
+                });
+            });
+        });
+    </script>
+}
+
+@functions {
+    public string GetCapsuleCardClass(string id) => id switch
+    {
+        "single"  => "capsule-img--standard",
+        "singlew" => "capsule-img--premium",
+        "singlem" => "capsule-img--lux",
+        "double"  => "capsule-img--double",
+        _         => ""
+    };
+}

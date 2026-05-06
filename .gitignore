@@ -1,0 +1,21 @@
+# Build
+bin/
+obj/
+
+# Secrets (не заливати паролі!)
+appsettings.json
+
+# Node (генератор docx)
+node_modules/
+package-lock.json
+package.json
+generate_doc.js
+
+# IDE
+.vs/
+*.user
+*.suo
+
+# OS
+.DS_Store
+Thumbs.db

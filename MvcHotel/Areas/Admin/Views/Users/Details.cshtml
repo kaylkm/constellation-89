@@ -1,0 +1,58 @@
+@model MvcHotel.Data.Entities.User
+@{
+    ViewData["Title"] = "Користувач · " + Model.Name;
+}
+
+<div style="max-width:680px;">
+    <a asp-area="Admin" asp-controller="Users" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title">@Model.Name</span>
+            <div style="display:flex;gap:8px;">
+                <a asp-area="Admin" asp-controller="Users" asp-action="Edit" asp-route-id="@Model.Id" class="btn-admin btn-primary-admin">Редагувати</a>
+                <a asp-area="Admin" asp-controller="Users" asp-action="Delete" asp-route-id="@Model.Id" class="btn-admin btn-danger-admin">Видалити</a>
+            </div>
+        </div>
+        <div class="page-card-body">
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="form-label-admin">ID</div>
+                    <div style="color:var(--muted);">#@Model.Id</div>
+                </div>
+                <div class="col-6">
+                    <div class="form-label-admin">Відгуків</div>
+                    <div style="font-weight:600;">@Model.Reviews.Count</div>
+                </div>
+            </div>
+
+            @if (Model.Reviews.Any())
+            {
+                <div class="form-label-admin mb-2">Відгуки</div>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    @foreach (var r in Model.Reviews.OrderByDescending(x => x.CreatedAt))
+                    {
+                        <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:1rem;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:.5rem;">
+                                @if (r.Rating?.GeneralImpression != null)
+                                {
+                                    <span class="badge-rating">★ @r.Rating.GeneralImpression</span>
+                                }
+                                else { <span></span> }
+                                <span style="font-size:.75rem; color:var(--muted);">@r.CreatedAt.ToString("dd.MM.yyyy")</span>
+                            </div>
+                            <div style="font-size:.875rem; line-height:1.5; color:#cbd5e1;">@r.Text</div>
+                            <div style="margin-top:.5rem;">
+                                <a asp-area="Admin" asp-controller="Reviews" asp-action="Edit" asp-route-id="@r.Id" style="font-size:.75rem; color:var(--accent); text-decoration:none;">Ред. відгук →</a>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div style="color:var(--muted); font-size:.875rem;">Відгуків немає.</div>
+            }
+        </div>
+    </div>
+</div>

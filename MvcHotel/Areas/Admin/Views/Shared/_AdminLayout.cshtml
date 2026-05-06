@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] — Адмін · Constellation 89</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <style>
+        :root {
+            --bg: #0a0a0f;
+            --bg2: #0f0f1a;
+            --sidebar: #0d0d18;
+            --border: rgba(139,92,246,0.2);
+            --accent: #8b5cf6;
+            --accent2: #4f46e5;
+            --text: #e2e8f0;
+            --muted: #64748b;
+            --success: #10b981;
+            --danger: #ef4444;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; background: var(--bg); color: var(--text); font-family: 'Segoe UI', sans-serif; min-height: 100vh; display: flex; }
+
+        /* Sidebar */
+        .admin-sidebar {
+            width: 240px; min-height: 100vh; background: var(--sidebar);
+            border-right: 1px solid var(--border); display: flex; flex-direction: column;
+            position: fixed; top: 0; left: 0; z-index: 100;
+        }
+        .sidebar-logo {
+            padding: 1.5rem 1.25rem 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-logo .brand { color: var(--accent); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+        .sidebar-logo .brand-name { color: var(--text); font-size: 1.1rem; font-weight: 700; }
+        .sidebar-logo .badge-admin {
+            display: inline-block; background: rgba(139,92,246,0.15); color: var(--accent);
+            font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 20px;
+            border: 1px solid rgba(139,92,246,0.3); letter-spacing: 0.05em; margin-top: 4px;
+        }
+        .sidebar-nav { padding: 1rem 0; flex: 1; }
+        .sidebar-section { padding: 0.5rem 1.25rem 0.25rem; font-size: 0.65rem; font-weight: 700; color: var(--muted); letter-spacing: 0.12em; text-transform: uppercase; }
+        .sidebar-link {
+            display: flex; align-items: center; gap: 0.6rem;
+            padding: 0.55rem 1.25rem; color: #94a3b8; text-decoration: none;
+            font-size: 0.875rem; transition: all .15s; border-left: 3px solid transparent;
+        }
+        .sidebar-link:hover { color: var(--text); background: rgba(139,92,246,0.08); }
+        .sidebar-link.active { color: var(--accent); background: rgba(139,92,246,0.1); border-left-color: var(--accent); font-weight: 600; }
+        .sidebar-link .icon { width: 16px; text-align: center; font-size: 0.9rem; }
+        .sidebar-footer { padding: 1rem 1.25rem; border-top: 1px solid var(--border); }
+
+        /* Main */
+        .admin-main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* Topbar */
+        .admin-topbar {
+            background: var(--bg2); border-bottom: 1px solid var(--border);
+            padding: 0.85rem 1.75rem; display: flex; align-items: center; justify-content: space-between;
+        }
+        .topbar-title { font-size: 1.1rem; font-weight: 600; color: var(--text); }
+        .topbar-user { font-size: 0.8rem; color: var(--muted); }
+
+        /* Content */
+        .admin-content { padding: 1.75rem; flex: 1; }
+
+        /* Cards */
+        .stat-card {
+            background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+            border-radius: 12px; padding: 1.25rem 1.5rem;
+        }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--text); line-height: 1; }
+        .stat-label { color: var(--muted); font-size: 0.8rem; margin-top: 0.25rem; }
+        .stat-icon { font-size: 1.75rem; opacity: 0.5; }
+
+        /* Table */
+        .admin-table {
+            width: 100%; border-collapse: collapse;
+            background: rgba(255,255,255,0.02); border-radius: 12px; overflow: hidden;
+        }
+        .admin-table th { background: rgba(139,92,246,0.08); color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; padding: 0.75rem 1rem; text-align: left; }
+        .admin-table td { padding: 0.75rem 1rem; border-top: 1px solid rgba(255,255,255,0.04); font-size: 0.875rem; vertical-align: middle; }
+        .admin-table tr:hover td { background: rgba(139,92,246,0.04); }
+
+        /* Badges */
+        .badge-rating { display: inline-flex; align-items: center; gap: 3px; background: rgba(139,92,246,0.15); color: var(--accent); padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; }
+        .badge-no-reply { background: rgba(100,116,139,0.15); color: var(--muted); padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; }
+        .badge-replied { background: rgba(16,185,129,0.15); color: #34d399; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; }
+
+        /* Buttons */
+        .btn-admin { border-radius: 8px; font-size: 0.8rem; font-weight: 600; padding: 0.4rem 0.85rem; border: none; cursor: pointer; transition: opacity .15s; }
+        .btn-admin:hover { opacity: 0.85; }
+        .btn-primary-admin { background: linear-gradient(135deg, #7c3aed, #4f46e5); color: #fff; }
+        .btn-secondary-admin { background: rgba(255,255,255,0.07); color: var(--text); border: 1px solid var(--border); }
+        .btn-danger-admin { background: rgba(239,68,68,0.15); color: #fca5a5; border: 1px solid rgba(239,68,68,0.3); }
+        .btn-success-admin { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+
+        /* Form */
+        .form-label-admin { color: #94a3b8; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.35rem; text-transform: uppercase; letter-spacing: 0.05em; }
+        .form-control-admin {
+            background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+            color: var(--text); border-radius: 8px; padding: 0.6rem 0.85rem; width: 100%; font-size: 0.875rem;
+        }
+        .form-control-admin:focus { outline: none; border-color: var(--accent); background: rgba(255,255,255,0.07); box-shadow: 0 0 0 3px rgba(139,92,246,0.15); }
+        .form-control-admin::placeholder { color: #475569; }
+
+        /* Alert */
+        .alert-admin { border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.875rem; margin-bottom: 1rem; }
+        .alert-success-admin { background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.25); color: #6ee7b7; }
+        .alert-danger-admin { background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.25); color: #fca5a5; }
+
+        /* Page card */
+        .page-card { background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+        .page-card-header { background: rgba(139,92,246,0.07); border-bottom: 1px solid var(--border); padding: 1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+        .page-card-title { font-size: 0.95rem; font-weight: 700; color: var(--text); }
+        .page-card-body { padding: 1.5rem; }
+
+        /* Star rating */
+        .stars { color: #f59e0b; font-size: 0.9rem; }
+
+        /* Truncate */
+        .text-truncate-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Back link */
+        .back-link { color: var(--muted); font-size: 0.8rem; text-decoration: none; }
+        .back-link:hover { color: var(--accent); }
+
+        /* Delete confirm */
+        .delete-card { max-width: 480px; margin: 0 auto; }
+
+        /* Logout form */
+        .logout-form { display: inline; }
+        .btn-logout { background: none; border: none; color: var(--muted); font-size: 0.875rem; cursor: pointer; padding: 0.5rem 1rem; width: 100%; text-align: left; display: flex; align-items: center; gap: 0.5rem; border-radius: 4px; }
+        .btn-logout:hover { color: #fca5a5; background: rgba(239,68,68,0.08); }
+
+        @@media (max-width: 768px) {
+            .admin-sidebar { width: 60px; }
+            .sidebar-logo .brand-name, .sidebar-logo .badge-admin, .sidebar-section, .sidebar-link span { display: none; }
+            .admin-main { margin-left: 60px; }
+        }
+    </style>
+</head>
+<body>
+    <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+            <div class="brand">✦ Constellation</div>
+            <div class="brand-name">89</div>
+            <div class="badge-admin">ADMIN</div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section">Навігація</div>
+            <a asp-area="Admin" asp-controller="Home" asp-action="Index"
+               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Home" ? "active" : "")">
+                <span class="icon">⬡</span><span>Дашборд</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Reviews" asp-action="Index"
+               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Reviews" ? "active" : "")">
+                <span class="icon">✉</span><span>Відгуки</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Users" asp-action="Index"
+               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")">
+                <span class="icon">◎</span><span>Користувачі</span>
+            </a>
+            <a asp-area="Admin" asp-controller="Capsules" asp-action="Index"
+               class="sidebar-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Capsules" ? "active" : "")">
+                <span class="icon">◈</span><span>Ціни капсул</span>
+            </a>
+
+            <div class="sidebar-section" style="margin-top:1rem;">Сайт</div>
+            <a href="/" class="sidebar-link" target="_blank">
+                <span class="icon">↗</span><span>Головна</span>
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <form asp-controller="Account" asp-action="Logout" asp-area="" method="post" class="logout-form">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn-logout">
+                    <span>⎋</span><span>Вийти</span>
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <div class="admin-main">
+        <div class="admin-topbar">
+            <div class="topbar-title">@(ViewData["Title"] ?? "Адмінпанель")</div>
+            <div class="topbar-user">@User.Identity?.Name</div>
+        </div>
+
+        <div class="admin-content">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert-admin alert-success-admin">✓ @TempData["Success"]</div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert-admin alert-danger-admin">✗ @TempData["Error"]</div>
+            }
+
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

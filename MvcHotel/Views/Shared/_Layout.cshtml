@@ -1,0 +1,79 @@
+﻿<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Constellation 89</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Exo+2:ital,wght@0,300;0,400;0,600;1,300&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="~/css/styles.css" asp-append-version="true" />
+</head>
+<body>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a asp-controller="Home" asp-action="Index" asp-fragment="hero" class="nav-logo">
+                <span class="logo-icon">✦</span>
+                <span class="logo-text">Constellation <em>89</em></span>
+            </a>
+
+            <button class="burger" id="burger" aria-label="Відкрити меню">
+                <span></span><span></span><span></span>
+            </button>
+
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#about"        class="nav-link">Про нас</a></li>
+                <li><a href="#capsules"     class="nav-link">Капсули</a></li>
+                <li><a href="#gallery"      class="nav-link">Галерея</a></li>
+                <li><a href="#reviews"      class="nav-link">Відгуки</a></li>
+                <li><a href="#contact"      class="nav-link">Контакти</a></li>
+                <li><a href="#leave-review" class="nav-btn">Залишити відгук</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    @RenderBody()
+
+    <script>
+        // ─── Бургер-меню ───
+        const burger   = document.getElementById('burger');
+        const navLinks = document.getElementById('nav-links');
+
+        burger.addEventListener('click', () => {
+            navLinks.classList.toggle('open');
+            burger.classList.toggle('active');
+        });
+
+        document.querySelectorAll('.nav-link, .nav-btn').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('open');
+                burger.classList.remove('active');
+            });
+        });
+
+        // ─── Navbar при скролі ───
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // ─── Плавна поява елементів при скролі ───
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll(
+            '.capsule-card, .review-card, .feature-item, .contact-item, .gallery-item'
+        ).forEach(el => {
+            el.classList.add('fade-in');
+            observer.observe(el);
+        });
+    </script>
+
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

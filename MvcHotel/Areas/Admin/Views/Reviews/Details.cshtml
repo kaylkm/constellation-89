@@ -1,0 +1,86 @@
+@model MvcHotel.Data.Entities.Review
+@{
+    ViewData["Title"] = "Відгук #" + Model.Id;
+}
+
+<div style="max-width:680px;">
+    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title">Відгук #@Model.Id</span>
+            <div style="display:flex;gap:8px;">
+                <a asp-area="Admin" asp-controller="Reviews" asp-action="Edit" asp-route-id="@Model.Id" class="btn-admin btn-primary-admin">Відповісти</a>
+                <a asp-area="Admin" asp-controller="Reviews" asp-action="Delete" asp-route-id="@Model.Id" class="btn-admin btn-danger-admin">Видалити</a>
+            </div>
+        </div>
+        <div class="page-card-body">
+            <div class="row g-3 mb-4">
+                <div class="col-6">
+                    <div class="form-label-admin">Автор</div>
+                    <div style="font-weight:600;">@Model.Author.Name</div>
+                </div>
+                <div class="col-6">
+                    <div class="form-label-admin">Дата</div>
+                    <div style="color:var(--muted);">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                </div>
+                @if (Model.EditedAt != null)
+                {
+                    <div class="col-12">
+                        <div class="form-label-admin">Відредаговано</div>
+                        <div style="color:var(--muted);">@Model.EditedAt.Value.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                }
+            </div>
+
+            <div class="mb-4">
+                <div class="form-label-admin">Текст відгуку</div>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:1rem; line-height:1.6;">
+                    @Model.Text
+                </div>
+            </div>
+
+            @if (Model.Rating != null)
+            {
+                <div class="mb-4">
+                    <div class="form-label-admin">Оцінки</div>
+                    <div class="row g-2 mt-1">
+                        @{
+                            void RatingRow(string label, short? val)
+                            {
+                                <div class="col-6">
+                                    <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:.65rem 1rem; display:flex; justify-content:space-between; align-items:center;">
+                                        <span style="font-size:.8rem; color:var(--muted);">@label</span>
+                                        @if (val != null)
+                                        {
+                                            <span class="badge-rating">★ @val</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color:var(--muted); font-size:.8rem;">—</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            RatingRow("Загальне враження", Model.Rating.GeneralImpression);
+                            RatingRow("Чистота", Model.Rating.Cleanliness);
+                            RatingRow("Персонал", Model.Rating.Staff);
+                            RatingRow("Ціна/Якість", Model.Rating.PriceQuality);
+                        }
+                    </div>
+                </div>
+            }
+
+            @if (Model.AdminReply != null)
+            {
+                <div>
+                    <div class="form-label-admin">Відповідь адміна</div>
+                    <div style="background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.2); border-radius:8px; padding:1rem; line-height:1.6; margin-top:.5rem;">
+                        @Model.AdminReply.Text
+                        <div style="font-size:.75rem; color:var(--muted); margin-top:.5rem;">@Model.AdminReply.CreatedAt.ToString("dd.MM.yyyy HH:mm")</div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

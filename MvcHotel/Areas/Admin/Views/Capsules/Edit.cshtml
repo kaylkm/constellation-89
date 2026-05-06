@@ -1,0 +1,37 @@
+@model MvcHotel.Data.Entities.CapsulePrice
+@{
+    ViewData["Title"] = "Ціна капсули";
+    var capsuleName = ViewBag.CapsuleName as string ?? Model.Slug;
+}
+
+<div style="max-width:420px;">
+    <a asp-area="Admin" asp-controller="Capsules" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title">@capsuleName</span>
+        </div>
+        <div class="page-card-body">
+            <form asp-area="Admin" asp-controller="Capsules" asp-action="Edit" asp-route-id="@Model.Id" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Slug" />
+
+                <div class="mb-4">
+                    <label class="form-label-admin">Ціна (грн / ніч)</label>
+                    <input asp-for="Price"
+                           type="number"
+                           min="1"
+                           class="form-control-admin"
+                           style="font-size:1.25rem; font-weight:700;" />
+                    <span asp-validation-for="Price" style="color:#fca5a5; font-size:.8rem;"></span>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn-admin btn-primary-admin" style="padding:.55rem 1.5rem;">Зберегти</button>
+                    <a asp-area="Admin" asp-controller="Capsules" asp-action="Index" class="btn-admin btn-secondary-admin" style="padding:.55rem 1.5rem;">Скасувати</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

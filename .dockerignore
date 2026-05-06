@@ -1,0 +1,8 @@
+**/bin
+**/obj
+**/.vs
+**/.vscode
+MvcHotel.Tests/
+*.user
+*.suo
+.git
