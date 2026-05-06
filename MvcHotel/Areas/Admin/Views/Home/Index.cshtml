@@ -1,0 +1,90 @@
+@model List<MvcHotel.Data.Entities.Review>
+@{
+    ViewData["Title"] = "Дашборд";
+    double avgRating = ViewBag.AvgRating ?? 0;
+}
+
+<div class="row g-3 mb-4">
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <div class="stat-value">@ViewBag.TotalReviews</div>
+                <div class="stat-label">Відгуків</div>
+            </div>
+            <div class="stat-icon">✉</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <div class="stat-value">@ViewBag.TotalUsers</div>
+                <div class="stat-label">Користувачів</div>
+            </div>
+            <div class="stat-icon">◎</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <div class="stat-value">@ViewBag.TotalReplies</div>
+                <div class="stat-label">Відповідей</div>
+            </div>
+            <div class="stat-icon">↩</div>
+        </div>
+    </div>
+    <div class="col-sm-6 col-xl-3">
+        <div class="stat-card d-flex align-items-center justify-content-between">
+            <div>
+                <div class="stat-value">@avgRating.ToString("F1")</div>
+                <div class="stat-label">Сер. оцінка</div>
+            </div>
+            <div class="stat-icon">★</div>
+        </div>
+    </div>
+</div>
+
+<div class="page-card">
+    <div class="page-card-header">
+        <span class="page-card-title">Останні відгуки</span>
+        <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="btn-admin btn-primary-admin">Всі відгуки</a>
+    </div>
+    <div style="overflow-x:auto;">
+        <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Автор</th>
+                    <th>Текст</th>
+                    <th>Оцінка</th>
+                    <th>Дата</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td style="color:var(--muted);">@r.Id</td>
+                        <td style="font-weight:600;">@r.Author.Name</td>
+                        <td style="max-width:280px;" class="text-truncate-2">@r.Text</td>
+                        <td>
+                            @if (r.Rating?.GeneralImpression != null)
+                            {
+                                <span class="badge-rating">★ @r.Rating.GeneralImpression</span>
+                            }
+                            else { <span style="color:var(--muted);">—</span> }
+                        </td>
+                        <td style="color:var(--muted); font-size:0.8rem;">@r.CreatedAt.ToString("dd.MM.yyyy")</td>
+                        <td>
+                            <a asp-area="Admin" asp-controller="Reviews" asp-action="Edit" asp-route-id="@r.Id" class="btn-admin btn-secondary-admin">Відповісти</a>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="6" style="text-align:center; color:var(--muted); padding:2rem;">Відгуків ще немає</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

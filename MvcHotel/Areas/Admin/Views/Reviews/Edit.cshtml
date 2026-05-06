@@ -1,0 +1,62 @@
+@model MvcHotel.ViewModels.Admin.ReviewEditViewModel
+@{
+    ViewData["Title"] = "Відповідь на відгук #" + Model.Id;
+}
+
+<div style="max-width:680px;">
+    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="back-link">← До списку</a>
+
+    <div class="page-card mt-3">
+        <div class="page-card-header">
+            <span class="page-card-title">Відгук від @Model.AuthorName</span>
+            <span style="font-size:.8rem; color:var(--muted);">@Model.CreatedAt.ToString("dd.MM.yyyy HH:mm")</span>
+        </div>
+        <div class="page-card-body">
+
+            @* Відгук клієнта (тільки для читання) *@
+            <div class="mb-3">
+                <div class="form-label-admin">Відгук клієнта</div>
+                <div style="background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:8px; padding:1rem; line-height:1.6; color:#cbd5e1;">
+                    @Model.ReviewText
+                </div>
+            </div>
+
+            @if (Model.GeneralImpression != null)
+            {
+                <div class="mb-4">
+                    <div class="form-label-admin">Оцінка</div>
+                    <span class="badge-rating">★ @Model.GeneralImpression / 5</span>
+                </div>
+            }
+
+            @* Форма відповіді *@
+            <form asp-area="Admin" asp-controller="Reviews" asp-action="Edit" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" asp-for="Id" />
+
+                <div class="mb-4">
+                    <label class="form-label-admin">
+                        @(Model.AdminReplyText != null ? "Редагувати відповідь готелю" : "Написати відповідь готелю")
+                    </label>
+                    <textarea asp-for="AdminReplyText"
+                              class="form-control-admin"
+                              rows="6"
+                              style="border-color: @(Model.AdminReplyText != null ? "var(--accent)" : "var(--border)");"
+                              placeholder="Напишіть відповідь від імені готелю Constellation 89..."></textarea>
+                    <div style="font-size:.75rem; color:var(--muted); margin-top:.35rem;">
+                        @(Model.AdminReplyText != null 
+                            ? "Ви редагуєте існуючу відповідь. Очистіть поле, щоб видалити її." 
+                            : "Ваша відповідь буде опублікована під відгуком клієнта.")
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:10px;">
+                    <button type="submit" class="btn-admin btn-primary-admin" style="padding:.55rem 1.5rem;">
+                        @(Model.AdminReplyText != null ? "Зберегти зміни" : "Опублікувати відповідь")
+                    </button>
+                    <a asp-area="Admin" asp-controller="Reviews" asp-action="Index" class="btn-admin btn-secondary-admin" style="padding:.55rem 1.5rem;">Скасувати</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
